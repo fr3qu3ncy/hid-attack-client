@@ -12,6 +12,16 @@ class Program
         var url = "https://n8n.lan/webhook/7994dc88-9513-4cf3-8717-a32a1db60704";
         using var client = new HttpClient();
 
+        // ASCII Art Banner
+        Console.WriteLine(@"
+ _    _            _              _   _      _   
+| |  | |          | |            | \ | |    | |  
+| |__| | __ _  ___| | _____ _ __ |  \| | ___| |_ 
+|  __  |/ _` |/ __| |/ / _ \ '_ \| . ` |/ _ \ __|
+| |  | | (_| | (__|   <  __/ | | | |\  |  __/ |_ 
+|_|  |_|\__,_|\___|_|\_\___|_| |_|_| \_|\___|\__|
+");
+
         // Store the conversation history as a list of strings
         var history = new List<string>();
 
@@ -52,7 +62,7 @@ class Program
             Console.WriteLine($"Error: {ex.Message}");
         }
 
-         Console.WriteLine("--------------------------------------------------");
+        Console.WriteLine("--------------------------------------------------");
         Console.WriteLine(" ");
         Console.WriteLine("Simple Hacker Chat Client. Type your message and press Enter.");
 
