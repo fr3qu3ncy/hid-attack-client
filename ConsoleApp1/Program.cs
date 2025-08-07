@@ -52,7 +52,7 @@ class Program
             Console.WriteLine($"Error: {ex.Message}");
         }
 
-        Console.WriteLine("..........");
+         Console.WriteLine("--------------------------------------------------");
         Console.WriteLine(" ");
         Console.WriteLine("Simple Hacker Chat Client. Type your message and press Enter.");
 
@@ -85,6 +85,7 @@ class Program
                 {
                     string botReply = textProp.GetString();
                     Console.WriteLine($"Hacker: {botReply}");
+                    Console.WriteLine("--------------------------------------------------");
 
                     // Add user message and bot reply to history
                     history.Add($"You: {userMessage}");
