@@ -8,7 +8,13 @@
     <Nullable>enable</Nullable>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>link</TrimMode>
+    <IsTrimmable>false</IsTrimmable>
     <PublishCompressed>true</PublishCompressed>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
-
+  <ItemGroup>
+    <TrimmerRootAssembly Include="System.Text.Json" />
+    <Using Include="System.Text.Json.Serialization" />
+  </ItemGroup>
 </Project>

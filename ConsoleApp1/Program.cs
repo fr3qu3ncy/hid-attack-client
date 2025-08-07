@@ -36,8 +36,8 @@ class Program
 
         // Silently send initial message and display the bot's response
         string initialMessage = "What is going on? Who Are You?";
-        var initialPayload = new { data = initialMessage };
-        var initialJson = JsonSerializer.Serialize(initialPayload);
+        var initialPayload = new Payload { data = initialMessage };
+        var initialJson = JsonSerializer.Serialize(initialPayload, AppJsonContext.Default.Payload);
         var initialContent = new StringContent(initialJson, Encoding.UTF8, "application/json");
 
         Console.WriteLine("Connecting to Hacker Net..........");
@@ -52,7 +52,7 @@ class Program
             initialResponse.EnsureSuccessStatusCode();
 
             var initialResponseStream = await initialResponse.Content.ReadAsStreamAsync();
-            var initialResponseJson = await JsonSerializer.DeserializeAsync<JsonElement>(initialResponseStream);
+            var initialResponseJson = await JsonSerializer.DeserializeAsync<JsonElement>(initialResponseStream, AppJsonContext.Default.JsonElement);
 
             if (initialResponseJson.TryGetProperty("text", out var initialTextProp))
             {
@@ -88,8 +88,8 @@ class Program
                 fullMessage += "\n";
             fullMessage += $"You: {userMessage}";
 
-            var payload = new { data = fullMessage };
-            var json = JsonSerializer.Serialize(payload);
+            var payload = new Payload { data = fullMessage };
+            var json = JsonSerializer.Serialize(payload, AppJsonContext.Default.Payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
@@ -98,7 +98,7 @@ class Program
                 response.EnsureSuccessStatusCode();
 
                 var responseStream = await response.Content.ReadAsStreamAsync();
-                var responseJson = await JsonSerializer.DeserializeAsync<JsonElement>(responseStream);
+                var responseJson = await JsonSerializer.DeserializeAsync(responseStream, AppJsonContext.Default.JsonElement);
 
                 if (responseJson.TryGetProperty("text", out var textProp))
                 {
