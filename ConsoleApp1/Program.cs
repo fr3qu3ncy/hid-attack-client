@@ -103,6 +103,8 @@ class Program
                 if (responseJson.TryGetProperty("text", out var textProp))
                 {
                     string botReply = textProp.GetString();
+                    Console.WriteLine("..................................................");
+                    Console.WriteLine(" ");
                     Console.WriteLine($"Hacker: {botReply}");
                     Console.WriteLine("--------------------------------------------------");
 
