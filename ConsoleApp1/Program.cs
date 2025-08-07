@@ -42,7 +42,7 @@ class Program
 
         Console.WriteLine("Connecting to Hacker Net..........");
         Console.WriteLine(" ");
-        Console.WriteLine("Simple Hacker Chat Client.");
+        Console.WriteLine("Hacker Chat Client.");
         Console.WriteLine("..........");
         Console.WriteLine(" ");
 
@@ -73,7 +73,7 @@ class Program
 
         Console.WriteLine("--------------------------------------------------");
         Console.WriteLine(" ");
-        Console.WriteLine("Simple Hacker Chat Client. Type your message and press Enter.");
+        Console.WriteLine("Hacker Chat Client. Type your message and press Enter.");
 
         while (true)
         {
