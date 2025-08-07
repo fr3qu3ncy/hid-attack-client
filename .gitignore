@@ -13,4 +13,6 @@ obj/
 *.log
 *.tmp
 
-# Do NOT ignore bin/
+\bin
+# Do NOT ignore release files
+!bin/Release/net9.0/win-x64/publish/*

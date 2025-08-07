@@ -18,7 +18,7 @@ class Program
             // Ignore if no console is available
         }
 
-        var url = "https://n8n.lan/webhook/7994dc88-9513-4cf3-8717-a32a1db60704";
+        var url = "https:///n8n.it2ms.com/webhook/7994dc88-9513-4cf3-8717-a32a1db60704";
         using var client = new HttpClient();
 
         // ASCII Art Banner
