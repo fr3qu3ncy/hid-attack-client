@@ -1,66 +1,107 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 class Program
 {
     static async Task Main()
     {
-        var url = "http://search.lan/";
+        var url = "https://n8n.lan/webhook/7994dc88-9513-4cf3-8717-a32a1db60704";
         using var client = new HttpClient();
 
-        Console.WriteLine($"Requesting: {url}");
+        // Store the conversation history as a list of strings
+        var history = new List<string>();
 
-        // Send request and get response headers first
-        using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
+        // Silently send initial message and display the bot's response
+        string initialMessage = "What is going on? Who Are You?";
+        var initialPayload = new { data = initialMessage };
+        var initialJson = JsonSerializer.Serialize(initialPayload);
+        var initialContent = new StringContent(initialJson, Encoding.UTF8, "application/json");
 
-        var contentLength = response.Content.Headers.ContentLength;
-        using var stream = await response.Content.ReadAsStreamAsync();
+        Console.WriteLine("Connecting to Hacker Net..........");
+        Console.WriteLine(" ");
+        Console.WriteLine("Simple Hacker Chat Client.");
+        Console.WriteLine("..........");
+        Console.WriteLine(" ");
 
-        const int bufferSize = 8192;
-        var buffer = new byte[bufferSize];
-        int bytesRead;
-        long totalRead = 0;
-
-        Console.Write("Downloading: [");
-        int progressBarWidth = 40;
-        int lastProgress = 0;
-
-        using var ms = new System.IO.MemoryStream();
-        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        try
         {
-            ms.Write(buffer, 0, bytesRead);
-            totalRead += bytesRead;
+            using var initialResponse = await client.PostAsync(url, initialContent);
+            initialResponse.EnsureSuccessStatusCode();
 
-            if (contentLength.HasValue)
+            var initialResponseStream = await initialResponse.Content.ReadAsStreamAsync();
+            var initialResponseJson = await JsonSerializer.DeserializeAsync<JsonElement>(initialResponseStream);
+
+            if (initialResponseJson.TryGetProperty("text", out var initialTextProp))
             {
-                int progress = (int)((totalRead * progressBarWidth) / contentLength.Value);
-                if (progress != lastProgress)
+                string botReply = initialTextProp.GetString();
+                Console.WriteLine($"Hacker: {botReply}");
+                history.Add($"You: {initialMessage}");
+                history.Add($"Hacker: {botReply}");
+            }
+            else
+            {
+                Console.WriteLine("Hacker: (No 'text' property in response)");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+
+        Console.WriteLine("..........");
+        Console.WriteLine(" ");
+        Console.WriteLine("Simple Hacker Chat Client. Type your message and press Enter.");
+
+        while (true)
+        {
+            Console.Write("\nYou: ");
+            string userMessage = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(userMessage) || userMessage.Trim().ToLower() == "exit")
+                break;
+
+            // Build the message history string
+            var fullMessage = string.Join("\n", history);
+            if (!string.IsNullOrEmpty(fullMessage))
+                fullMessage += "\n";
+            fullMessage += $"You: {userMessage}";
+
+            var payload = new { data = fullMessage };
+            var json = JsonSerializer.Serialize(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                using var response = await client.PostAsync(url, content);
+                response.EnsureSuccessStatusCode();
+
+                var responseStream = await response.Content.ReadAsStreamAsync();
+                var responseJson = await JsonSerializer.DeserializeAsync<JsonElement>(responseStream);
+
+                if (responseJson.TryGetProperty("text", out var textProp))
                 {
-                    Console.Write(new string('=', progress - lastProgress));
-                    lastProgress = progress;
+                    string botReply = textProp.GetString();
+                    Console.WriteLine($"Hacker: {botReply}");
+
+                    // Add user message and bot reply to history
+                    history.Add($"You: {userMessage}");
+                    history.Add($"Hacker: {botReply}");
                 }
+                else
+                {
+                    Console.WriteLine("Hacker: (No 'text' property in response)");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
 
-        if (contentLength.HasValue)
-        {
-            Console.WriteLine(new string('=', progressBarWidth - lastProgress) + "]");
-        }
-        else
-        {
-            Console.WriteLine(" done]");
-        }
-
-        ms.Position = 0;
-        using var reader = new System.IO.StreamReader(ms);
-        string content = await reader.ReadToEndAsync();
-
-        Console.WriteLine("\n--- Response ---");
-        Console.WriteLine(content);
-
-        Console.WriteLine("\nPress Enter to exit...");
+        Console.WriteLine("\nGoodbye!");
         try
         {
             Console.ReadLine();
